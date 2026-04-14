@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: refimatch-ingest
+  namespace: refimatch
+spec:
+  ttlSecondsAfterFinished: 600
+  template:
+    spec:
+      restartPolicy: OnFailure
+      initContainers:
+        - name: wait-for-postgres
+          image: postgres:16-alpine
+          command: ["/bin/sh", "-c"]
+          args:
+            - "until pg_isready -h postgres -p 5432 -U refimatch; do sleep 2; done"
+          env:
+            - name: PGPASSWORD
+              value: refimatch
+      containers:
+        - name: ingest
+          image: refimatch-api:latest
+          imagePullPolicy: IfNotPresent
+          command: ["python", "/build/rag/ingest.py"]
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: refimatch-secrets
+                  key: DATABASE_URL

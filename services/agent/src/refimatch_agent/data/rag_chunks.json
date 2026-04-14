@@ -1,0 +1,24 @@
+{
+  "chunks": [
+    {
+      "id": "fees-001",
+      "text": "APR includes some lender fees spread over the loan; compare APR and also separate closing costs when evaluating breakeven."
+    },
+    {
+      "id": "breakeven-001",
+      "text": "Breakeven months estimate how long lower monthly payments take to recover upfront points and fees. It ignores time value of money unless you model a discount rate."
+    },
+    {
+      "id": "horizon-001",
+      "text": "Total cost over a chosen horizon (for example 5 years) helps if you may sell or refinance again before the loan matures."
+    },
+    {
+      "id": "house-age-001",
+      "text": "House age and purchase date inform maintenance risk and equity seasoning, but the mathematical comparison is driven mainly by balance, rate, term, and fees."
+    },
+    {
+      "id": "disclaimer-001",
+      "text": "This tool is educational and uses demo lender data. It is not a loan commitment or personalized financial advice."
+    }
+  ]
+}

@@ -1,0 +1,191 @@
+{
+  "$defs": {
+    "DemoOffer": {
+      "properties": {
+        "lender_id": {
+          "minLength": 1,
+          "title": "Lender Id",
+          "type": "string"
+        },
+        "lender_name": {
+          "title": "Lender Name",
+          "type": "string"
+        },
+        "apr": {
+          "exclusiveMinimum": 0,
+          "maximum": 0.25,
+          "title": "Apr",
+          "type": "number"
+        },
+        "points": {
+          "default": 0.0,
+          "description": "Points as fraction of loan (e.g. 0.01 = 1 point)",
+          "minimum": 0,
+          "title": "Points",
+          "type": "number"
+        },
+        "lender_fees": {
+          "default": 0.0,
+          "description": "Flat fees in dollars",
+          "minimum": 0,
+          "title": "Lender Fees",
+          "type": "number"
+        },
+        "term_months": {
+          "exclusiveMinimum": 0,
+          "maximum": 600,
+          "title": "Term Months",
+          "type": "integer"
+        },
+        "notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Notes"
+        }
+      },
+      "required": [
+        "lender_id",
+        "lender_name",
+        "apr",
+        "term_months"
+      ],
+      "title": "DemoOffer",
+      "type": "object"
+    },
+    "LoanScenario": {
+      "description": "User's current loan and goals.",
+      "properties": {
+        "original_principal": {
+          "description": "Original loan amount",
+          "exclusiveMinimum": 0,
+          "title": "Original Principal",
+          "type": "number"
+        },
+        "annual_rate": {
+          "description": "Current note rate (e.g. 0.065 for 6.5%)",
+          "exclusiveMinimum": 0,
+          "maximum": 0.25,
+          "title": "Annual Rate",
+          "type": "number"
+        },
+        "term_months": {
+          "exclusiveMinimum": 0,
+          "maximum": 600,
+          "title": "Term Months",
+          "type": "integer"
+        },
+        "months_paid": {
+          "description": "Payments made on current loan",
+          "minimum": 0,
+          "title": "Months Paid",
+          "type": "integer"
+        },
+        "house_purchase_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "House Purchase Date"
+        },
+        "as_of_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "As Of Date"
+        },
+        "extra_monthly_payment": {
+          "default": 0.0,
+          "minimum": 0,
+          "title": "Extra Monthly Payment",
+          "type": "number"
+        },
+        "hold_horizon_months": {
+          "default": 60,
+          "description": "Years to compare total cost",
+          "maximum": 360,
+          "minimum": 12,
+          "title": "Hold Horizon Months",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "original_principal",
+        "annual_rate",
+        "term_months",
+        "months_paid"
+      ],
+      "title": "LoanScenario",
+      "type": "object"
+    },
+    "RankingWeights": {
+      "description": "Higher weight = more important to minimize that objective.",
+      "properties": {
+        "monthly_payment": {
+          "default": 0.34,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Monthly Payment",
+          "type": "number"
+        },
+        "total_cost_horizon": {
+          "default": 0.33,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Total Cost Horizon",
+          "type": "number"
+        },
+        "breakeven_months": {
+          "default": 0.33,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Breakeven Months",
+          "type": "number"
+        }
+      },
+      "title": "RankingWeights",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "scenario": {
+      "$ref": "#/$defs/LoanScenario"
+    },
+    "offers": {
+      "items": {
+        "$ref": "#/$defs/DemoOffer"
+      },
+      "minItems": 1,
+      "title": "Offers",
+      "type": "array"
+    },
+    "weights": {
+      "$ref": "#/$defs/RankingWeights"
+    }
+  },
+  "required": [
+    "scenario",
+    "offers"
+  ],
+  "title": "CompareRequest",
+  "type": "object"
+}

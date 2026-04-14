@@ -1,0 +1,31 @@
+{
+  "offers": [
+    {
+      "lender_id": "demo-aurora",
+      "lender_name": "Aurora Demo Bank",
+      "apr": 0.0589,
+      "points": 0.0025,
+      "lender_fees": 3200,
+      "term_months": 360,
+      "notes": "Synthetic demo offer for portfolio use."
+    },
+    {
+      "lender_id": "demo-river",
+      "lender_name": "River Demo Credit Union",
+      "apr": 0.0605,
+      "points": 0.0,
+      "lender_fees": 1800,
+      "term_months": 360,
+      "notes": "Lower fees, slightly higher APR."
+    },
+    {
+      "lender_id": "demo-summit",
+      "lender_name": "Summit Demo Mortgage",
+      "apr": 0.0575,
+      "points": 0.01,
+      "lender_fees": 4500,
+      "term_months": 360,
+      "notes": "Lowest APR with higher points and fees."
+    }
+  ]
+}

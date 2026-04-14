@@ -1,0 +1,14 @@
+description: RefiMatch prompt regression (echo provider, no network)
+
+prompts:
+  - "You are a refinance assistant. Summarize this JSON in <=120 words: {{payload}}"
+
+providers:
+  - echo
+
+tests:
+  - vars:
+      payload: '{"ranked_lender_ids":["demo-river"],"baseline_monthly_pi":2100}'
+    assert:
+      - type: contains
+        value: ranked_lender_ids

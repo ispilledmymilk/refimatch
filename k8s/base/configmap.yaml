@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: refimatch-config
+  namespace: refimatch
+data:
+  REFIMATCH_RAG_BACKEND: "pg"
+  REFIMATCH_RAG_TOP_K: "4"
+  REFIMATCH_LLM_MOCK: "1"

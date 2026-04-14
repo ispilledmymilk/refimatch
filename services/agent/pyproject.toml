@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "refimatch-agent"
+version = "0.1.0"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+  "langgraph>=0.2",
+  "langchain-core>=0.3",
+  "langchain-openai>=0.2",
+  "langfuse>=2.50",
+  "numpy>=1.26",
+  "pydantic>=2.5",
+  "psycopg[binary]>=3.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4", "ruff>=0.3"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+refimatch_agent = ["py.typed", "data/*.json"]
