@@ -18,7 +18,6 @@ from app.catalog import load_demo_offers, load_offers_catalog
 from app.live_providers import normalize_property_type
 from app.market_catalog import load_demo_market
 
-
 load_dotenv()
 
 STATIC_DIR = Path(__file__).resolve().parent.parent / "static"

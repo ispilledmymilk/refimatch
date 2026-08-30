@@ -18,7 +18,13 @@ def _demo_narrative(user_text: str) -> str:
     baseline = re.search(r'"baseline_monthly_pi"\s*:\s*([0-9.]+)', user_text)
     baseline_str = f"${float(baseline.group(1)):,.0f}/mo" if baseline else "your current payment"
 
-    label = (top_id or "the top offer").replace("rateapi-", "").replace("demo-", "").replace("-", " ").title()
+    label = (
+        (top_id or "the top offer")
+        .replace("rateapi-", "")
+        .replace("demo-", "")
+        .replace("-", " ")
+        .title()
+    )
     if top_id and "aurora" in top_id:
         label = "Aurora Community Bank"
     elif top_id and "river" in top_id:

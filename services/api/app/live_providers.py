@@ -175,7 +175,8 @@ def geocode_address(
 
     Returns {"lat", "lon", "precision"} where precision is 1.0 (street) or 0.0 (city).
     """
-    country_code = "ca" if detect_country(state=state, zip_code=zip_code, country=country) == "Canada" else "us"
+    detected = detect_country(state=state, zip_code=zip_code, country=country)
+    country_code = "ca" if detected == "Canada" else "us"
     cache_key = f"geo2:{street}|{city}|{state}|{zip_code}|{country_code}"
     cached = _cache_get(cache_key)
     if cached is not None:
@@ -239,7 +240,14 @@ def geocode_address(
                 break
             # Keep city result only as last resort (loop continues only if street attempts failed)
             break
-        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, KeyError, ValueError, IndexError):
+        except (
+            urllib.error.URLError,
+            TimeoutError,
+            json.JSONDecodeError,
+            KeyError,
+            ValueError,
+            IndexError,
+        ):
             continue
 
     if out is not None:
@@ -479,7 +487,11 @@ def _slugify(text: str) -> str:
     return slug or "lender"
 
 
-def rateapi_row_to_offer(row: dict[str, Any], *, balance_hint: float = 350_000) -> dict[str, Any] | None:
+def rateapi_row_to_offer(
+    row: dict[str, Any],
+    *,
+    balance_hint: float = 350_000,
+) -> dict[str, Any] | None:
     """Map a RateAPI rate row into DemoOffer-compatible fields."""
     if str(row.get("product_type", "")).lower() != "mortgage":
         return None
@@ -563,7 +575,7 @@ def fetch_rateapi_mortgage_rates(
 
     if api_key:
         # Live query — filter mortgages for the user's state.
-        q = [f"product_type=mortgage", f"state={state}", f"limit={limit}", "sort=apr_asc"]
+        q = ["product_type=mortgage", f"state={state}", f"limit={limit}", "sort=apr_asc"]
         if term_months:
             q.append(f"term_months={term_months}")
         url = f"{RATEAPI_BASE}/v1/rates?{'&'.join(q)}"
@@ -582,7 +594,11 @@ def fetch_rateapi_mortgage_rates(
         except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as e:
             raise RuntimeError(f"RateAPI demo error: {e}") from e
 
-    rates = [r for r in data.get("rates", []) if str(r.get("product_type", "")).lower() == "mortgage"]
+    rates = [
+        r
+        for r in data.get("rates", [])
+        if str(r.get("product_type", "")).lower() == "mortgage"
+    ]
     if mode == "live":
         if term_months:
             preferred = [r for r in rates if int(r.get("term_months") or 0) == term_months]
@@ -593,10 +609,11 @@ def fetch_rateapi_mortgage_rates(
     else:
         # Demo book is small — keep all mortgages so the UI has a real comparison set.
         # Prefer 30yr first for ranking stability.
-        rates = sorted(
-            rates,
-            key=lambda r: (0 if int(r.get("term_months") or 0) == 360 else 1, float(r.get("apr") or 99)),
-        )
+        def _rate_sort_key(r: dict[str, Any]) -> tuple[int, float]:
+            term_rank = 0 if int(r.get("term_months") or 0) == 360 else 1
+            return (term_rank, float(r.get("apr") or 99))
+
+        rates = sorted(rates, key=_rate_sort_key)
 
     rates = rates[:limit]
     out = {

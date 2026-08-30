@@ -188,9 +188,11 @@ def _load_static_fallback(subject: SubjectProperty | None = None) -> dict[str, A
         PropertyListing.model_validate(x) for x in cfg.get("listings_fallback", [])
     ]
     typed = [
-        l.model_copy(update={"property_type": normalize_property_type(l.property_type)})
-        for l in listings
-        if normalize_property_type(l.property_type) == kind
+        listing.model_copy(
+            update={"property_type": normalize_property_type(listing.property_type)}
+        )
+        for listing in listings
+        if normalize_property_type(listing.property_type) == kind
     ]
     listings = typed
     return {
@@ -407,30 +409,44 @@ def fetch_live_market(
     listings = [t[2] for t in scored[:detail_limit]]
 
     if geo and kind != "apartment" and not radius_relaxed:
-        within = [l for l in listings if l.distance_km is not None and l.distance_km <= HOUSE_RADIUS_KM]
+        within = [
+            listing
+            for listing in listings
+            if listing.distance_km is not None and listing.distance_km <= HOUSE_RADIUS_KM
+        ]
         if within:
             listings = within
     if kind == "apartment" and not radius_relaxed:
         preferred = [
-            l
-            for l in listings
-            if l.same_building
-            or (l.distance_km is not None and l.distance_km <= APT_NEARBY_RADIUS_KM)
+            listing
+            for listing in listings
+            if listing.same_building
+            or (
+                listing.distance_km is not None
+                and listing.distance_km <= APT_NEARBY_RADIUS_KM
+            )
         ]
         if preferred:
             listings = preferred
 
     if not listings:
-        raise RuntimeError(f"No live {kind.replace('_', ' ')} listings returned — try another city or type.")
+        label = kind.replace("_", " ")
+        raise RuntimeError(
+            f"No live {label} listings returned — try another city or type."
+        )
 
-    prices = [l.asking_price for l in listings]
-    ppsfs = [l.price_per_sqft for l in listings if l.sqft > 0]
+    prices = [listing.asking_price for listing in listings]
+    ppsfs = [listing.price_per_sqft for listing in listings if listing.sqft > 0]
     median_price = _median(prices)
     median_ppsf = _median(ppsfs) if ppsfs else 0.0
 
     # Prefer same-building $/sqft for condo estimates when available.
     if kind == "apartment":
-        bldg_ppsfs = [l.price_per_sqft for l in listings if l.same_building and l.sqft > 0]
+        bldg_ppsfs = [
+            listing.price_per_sqft
+            for listing in listings
+            if listing.same_building and listing.sqft > 0
+        ]
         if bldg_ppsfs:
             median_ppsf = _median(bldg_ppsfs)
 
@@ -460,7 +476,10 @@ def fetch_live_market(
             estimated_value = 0.7 * estimated_value + 0.3 * comps_value
 
     estimated_value *= condition_value_multiplier(subject.condition)
-    yoy = yoy_hpi if yoy_hpi is not None else float(cfg.get("market", {}).get("yoy_appreciation_pct", 0.04))
+    if yoy_hpi is not None:
+        yoy = yoy_hpi
+    else:
+        yoy = float(cfg.get("market", {}).get("yoy_appreciation_pct", 0.04))
 
     subject = subject.model_copy(
         update={

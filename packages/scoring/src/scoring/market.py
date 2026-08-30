@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import date
 from typing import Any, Literal
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field
 
 
 class MarketAreaStats(BaseModel):
@@ -211,10 +211,13 @@ def analyze_market(req: MarketAnalysisRequest) -> MarketAnalysisResult:
             if appreciation_dollars >= 0
             else f"Home value change: ${appreciation_dollars:,.0f} since purchase"
         ),
-        "subject_rank_by_price": f"{subject_rank_price} of {len(comparisons) + 1} (including your home)",
+        "subject_rank_by_price": (
+            f"{subject_rank_price} of {len(comparisons) + 1} (including your home)"
+        ),
         "cheaper_listings_nearby": cheaper_count,
         "subject_vs_median_listing": (
-            f"{abs(vs_median_pct) * 100:.1f}% {'above' if vs_median_pct >= 0 else 'below'} area median"
+            f"{abs(vs_median_pct) * 100:.1f}% "
+            f"{'above' if vs_median_pct >= 0 else 'below'} area median"
         ),
         "subject_price_per_sqft": round(subject_ppsf, 2),
         "area_median_price_per_sqft": req.market.median_price_per_sqft,
