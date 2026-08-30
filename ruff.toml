@@ -4,3 +4,6 @@ exclude = ["ios", ".git", "**/.venv", "**/DerivedData"]
 
 [lint]
 select = ["E", "F", "I", "W"]
+
+[lint.per-file-ignores]
+"services/api/app/main.py" = ["E501"]

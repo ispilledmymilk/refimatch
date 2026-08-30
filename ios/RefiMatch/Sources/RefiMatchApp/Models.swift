@@ -117,6 +117,13 @@ struct ExplainResponse: Codable {
     let citations: [CitationDTO]
 }
 
+struct DemoRunResponse: Codable {
+    let headline: String
+    let compare: CompareResultDTO
+    let explain: ExplainResponse
+    let market: MarketAnalysisDTO?
+}
+
 struct CitationDTO: Codable, Identifiable {
     var id: String { chunkId }
     let chunkId: String
@@ -127,5 +134,178 @@ struct CitationDTO: Codable, Identifiable {
         case chunkId = "id"
         case text
         case score
+    }
+}
+
+struct MarketAreaDTO: Codable {
+    let areaName: String
+    let city: String
+    let state: String
+    let zipCode: String
+    let medianListPrice: Double
+    let medianPricePerSqft: Double
+    let avgDaysOnMarket: Double
+    let activeListingsCount: Int
+    let yoyAppreciationPct: Double
+
+    enum CodingKeys: String, CodingKey {
+        case areaName = "area_name"
+        case city, state
+        case zipCode = "zip_code"
+        case medianListPrice = "median_list_price"
+        case medianPricePerSqft = "median_price_per_sqft"
+        case avgDaysOnMarket = "avg_days_on_market"
+        case activeListingsCount = "active_listings_count"
+        case yoyAppreciationPct = "yoy_appreciation_pct"
+    }
+}
+
+struct SubjectPropertyDTO: Codable {
+    var propertyId: String
+    var address: String
+    var city: String
+    var state: String
+    var zipCode: String
+    var beds: Int
+    var baths: Double
+    var sqft: Int
+    var yearBuilt: Int
+    var purchasePrice: Double
+    var purchaseDate: String
+    var estimatedValue: Double
+    var askingPrice: Double?
+    var condition: String
+
+    enum CodingKeys: String, CodingKey {
+        case propertyId = "property_id"
+        case address, city, state, beds, baths, sqft, condition
+        case zipCode = "zip_code"
+        case yearBuilt = "year_built"
+        case purchasePrice = "purchase_price"
+        case purchaseDate = "purchase_date"
+        case estimatedValue = "estimated_value"
+        case askingPrice = "asking_price"
+    }
+}
+
+struct PropertyListingDTO: Codable, Identifiable {
+    var id: String { listingId }
+    let listingId: String
+    let address: String
+    let beds: Int
+    let baths: Double
+    let sqft: Int
+    let askingPrice: Double
+    let daysOnMarket: Int
+    let distanceMiles: Double
+
+    enum CodingKeys: String, CodingKey {
+        case listingId = "listing_id"
+        case address, beds, baths, sqft
+        case askingPrice = "asking_price"
+        case daysOnMarket = "days_on_market"
+        case distanceMiles = "distance_miles"
+    }
+}
+
+struct AppreciationMetricsDTO: Codable {
+    let purchasePrice: Double
+    let estimatedValue: Double
+    let askingPrice: Double?
+    let appreciationDollars: Double
+    let appreciationPct: Double
+    let annualizedAppreciationPct: Double
+    let yearsHeld: Double
+
+    enum CodingKeys: String, CodingKey {
+        case purchasePrice = "purchase_price"
+        case estimatedValue = "estimated_value"
+        case askingPrice = "asking_price"
+        case appreciationDollars = "appreciation_dollars"
+        case appreciationPct = "appreciation_pct"
+        case annualizedAppreciationPct = "annualized_appreciation_pct"
+        case yearsHeld = "years_held"
+    }
+}
+
+struct EquityMetricsDTO: Codable {
+    let equityDollars: Double
+    let ltvPct: Double
+    let equityGainSincePurchase: Double
+
+    enum CodingKeys: String, CodingKey {
+        case equityDollars = "equity_dollars"
+        case ltvPct = "ltv_pct"
+        case equityGainSincePurchase = "equity_gain_since_purchase"
+    }
+}
+
+struct ListingComparisonDTO: Codable, Identifiable {
+    var id: String { listingId }
+    let listingId: String
+    let address: String
+    let askingPrice: Double
+    let pricePerSqft: Double
+    let beds: Int
+    let baths: Double
+    let sqft: Int
+    let daysOnMarket: Int
+    let vsSubjectPriceDelta: Double
+
+    enum CodingKeys: String, CodingKey {
+        case listingId = "listing_id"
+        case address, beds, baths, sqft
+        case askingPrice = "asking_price"
+        case pricePerSqft = "price_per_sqft"
+        case daysOnMarket = "days_on_market"
+        case vsSubjectPriceDelta = "vs_subject_price_delta"
+    }
+}
+
+struct MarketAnalysisDTO: Codable {
+    let appreciation: AppreciationMetricsDTO
+    let equity: EquityMetricsDTO?
+    let subjectPricePerSqft: Double
+    let listingComparisons: [ListingComparisonDTO]
+    let summary: [String: String]
+
+    enum CodingKeys: String, CodingKey {
+        case appreciation, equity, summary
+        case subjectPricePerSqft = "subject_price_per_sqft"
+        case listingComparisons = "listing_comparisons"
+    }
+}
+
+struct DemoListingsResponse: Codable {
+    let market: MarketAreaDTO
+    let subjectProperty: SubjectPropertyDTO
+    let listings: [PropertyListingDTO]
+
+    enum CodingKeys: String, CodingKey {
+        case market, listings
+        case subjectProperty = "subject_property"
+    }
+}
+
+struct MarketAnalyzeRequest: Codable {
+    let loanBalance: Double?
+    let originalLoanAtPurchase: Double?
+    let subject: SubjectPropertyDTO?
+
+    enum CodingKeys: String, CodingKey {
+        case loanBalance = "loan_balance"
+        case originalLoanAtPurchase = "original_loan_at_purchase"
+        case subject
+    }
+}
+
+struct MarketLookupResponse: Codable {
+    let market: MarketAreaDTO
+    let subjectProperty: SubjectPropertyDTO
+    let listings: [PropertyListingDTO]
+
+    enum CodingKeys: String, CodingKey {
+        case market, listings
+        case subjectProperty = "subject_property"
     }
 }

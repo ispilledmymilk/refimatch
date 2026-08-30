@@ -12,7 +12,8 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "RefiMatchApp",
-            path: "Sources/RefiMatchApp"
+            path: "Sources/RefiMatchApp",
+            resources: [.process("Resources")]
         ),
     ]
 )

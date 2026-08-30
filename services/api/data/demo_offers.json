@@ -2,30 +2,30 @@
   "offers": [
     {
       "lender_id": "demo-aurora",
-      "lender_name": "Aurora Demo Bank",
+      "lender_name": "Aurora Community Bank",
       "apr": 0.0589,
       "points": 0.0025,
       "lender_fees": 3200,
       "term_months": 360,
-      "notes": "Synthetic demo offer for portfolio use."
+      "notes": "Balanced rate and closing costs — strong all-around choice."
     },
     {
       "lender_id": "demo-river",
-      "lender_name": "River Demo Credit Union",
+      "lender_name": "River Valley Credit Union",
       "apr": 0.0605,
       "points": 0.0,
       "lender_fees": 1800,
       "term_months": 360,
-      "notes": "Lower fees, slightly higher APR."
+      "notes": "Lower upfront fees; good if you may move before breakeven."
     },
     {
       "lender_id": "demo-summit",
-      "lender_name": "Summit Demo Mortgage",
+      "lender_name": "Summit Home Lending",
       "apr": 0.0575,
       "points": 0.01,
       "lender_fees": 4500,
       "term_months": 360,
-      "notes": "Lowest APR with higher points and fees."
+      "notes": "Lowest advertised rate with higher points and fees."
     }
   ]
 }

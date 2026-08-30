@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "refimatch-agent"
 version = "0.1.0"
-requires-python = ">=3.11,<3.14"
+requires-python = ">=3.11"
 dependencies = [
   "langgraph>=0.2",
   "langchain-core>=0.3",

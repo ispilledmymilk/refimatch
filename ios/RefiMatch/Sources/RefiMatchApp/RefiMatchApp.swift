@@ -8,6 +8,7 @@ struct RefiMatchApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(settings)
+                .tint(RefiTheme.accent)
         }
     }
 }

@@ -21,4 +21,7 @@ ENV PYTHONPATH=/build/services/api
 WORKDIR /build/services/api
 
 EXPOSE 8080
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
+ENV PORT=8080
+ENV REFIMATCH_LLM_MOCK=1
+ENV REFIMATCH_RAG_BACKEND=memory
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8080}"]

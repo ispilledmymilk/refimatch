@@ -7,7 +7,7 @@ name = "refimatch-scoring"
 version = "0.1.0"
 description = "Deterministic refinance comparison engine"
 readme = "README.md"
-requires-python = ">=3.11,<3.14"
+requires-python = ">=3.11"
 dependencies = [
   "numpy>=1.26",
   "pandas>=2.1",

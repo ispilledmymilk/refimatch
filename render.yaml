@@ -1,0 +1,21 @@
+# Render Blueprint — one-click deploy of the RefiMatch web demo + API
+# https://render.com/deploy?repo=https://github.com/ispilledmymilk/refimatch
+
+services:
+  - type: web
+    name: refimatch-demo
+    runtime: docker
+    plan: free
+    dockerfilePath: ./services/api/Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    envVars:
+      - key: REFIMATCH_LLM_MOCK
+        value: "1"
+      - key: REFIMATCH_RAG_BACKEND
+        value: memory
+      - key: REFIMATCH_CORS_ORIGINS
+        value: "*"
+      # Optional: set in Render dashboard for live CU rates
+      # - key: REFIMATCH_RATEAPI_KEY
+      #   sync: false

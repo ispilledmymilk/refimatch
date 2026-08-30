@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>RefiMatch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/static/demo.css"/>
+</head>
+<body>
+  <header class="topnav">
+    <div class="topnav-inner">
+      <a class="brand" href="#" data-tab="refinance">
+        <span class="brand-mark">R</span>
+        <span class="brand-text">RefiMatch</span>
+      </a>
+      <nav class="tabs" role="tablist">
+        <button type="button" class="tab active" role="tab" aria-selected="true" data-tab="refinance">Refinance</button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-tab="comps">Comps &amp; Appreciation</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- —— Refinance tab —— -->
+    <div id="panel-refinance" class="panel active" role="tabpanel">
+      <section class="page-hero refinance-hero">
+        <div class="page-hero-inner">
+          <h1>RefiMatch</h1>
+          <p>Compare refinance offers with transparent math and AI-backed explanations.</p>
+        </div>
+      </section>
+
+      <div class="content-wrap">
+        <p class="notice">Educational decision-support prototype. Not financial advice.</p>
+
+        <section class="panel-card">
+          <h2>Your current loan</h2>
+          <div class="grid-2">
+            <div class="field">
+              <label for="principal">Balance</label>
+              <input type="number" id="principal" value="350000" min="1"/>
+            </div>
+            <div class="field">
+              <label for="rate">Rate (%)</label>
+              <input type="number" id="rate" value="6.75" step="0.01" min="0.01"/>
+            </div>
+            <div class="field">
+              <label for="term-years">Term (years)</label>
+              <input type="number" id="term-years" value="30" min="1"/>
+            </div>
+            <div class="field">
+              <label for="months-paid">Paid (months)</label>
+              <input type="number" id="months-paid" value="48" min="0"/>
+            </div>
+            <div class="field">
+              <label for="hold-years">Compare horizon (years)</label>
+              <input type="number" id="hold-years" value="5" min="1"/>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel-card">
+          <h2>What matters most?</h2>
+          <div class="slider-row">
+            <label>Lower monthly payment <span id="w-payment-val">0.34</span></label>
+            <input type="range" id="w-payment" min="0" max="1" step="0.05" value="0.34"/>
+          </div>
+          <div class="slider-row">
+            <label>Lower total cost <span id="w-total-val">0.33</span></label>
+            <input type="range" id="w-total" min="0" max="1" step="0.05" value="0.33"/>
+          </div>
+          <div class="slider-row">
+            <label>Faster breakeven <span id="w-breakeven-val">0.33</span></label>
+            <input type="range" id="w-breakeven" min="0" max="1" step="0.05" value="0.33"/>
+          </div>
+        </section>
+
+        <section class="panel-card">
+          <h2>Lender offers</h2>
+          <p class="muted" id="offers-source">Loading rates…</p>
+          <div id="benchmark-box" class="stat-box hidden"></div>
+          <div id="offers-list"></div>
+        </section>
+
+        <section class="panel-card actions-bar">
+          <button class="btn-dark" id="btn-analyze" type="button">Analyze &amp; explain</button>
+          <button class="btn-ghost" id="btn-demo" type="button">One-tap demo</button>
+          <span id="status-loading" class="hidden"><span class="loading"></span> Running analysis…</span>
+          <p id="error" class="error hidden"></p>
+        </section>
+
+        <div id="results" class="hidden">
+          <section class="panel-card hidden" id="headline-card">
+            <p class="headline" id="headline"></p>
+          </section>
+
+          <section class="panel-card winner-card hidden" id="winner-section">
+            <div class="winner-label">Best match</div>
+            <div class="winner-name" id="winner-name"></div>
+            <div class="pills" id="winner-pills"></div>
+            <p class="muted" id="winner-baseline"></p>
+          </section>
+
+          <section class="panel-card">
+            <h2>Full ranking</h2>
+            <div id="ranking"></div>
+          </section>
+
+          <section class="panel-card">
+            <h2>Monthly payment comparison</h2>
+            <div class="chart" id="chart"></div>
+          </section>
+
+          <section class="panel-card">
+            <h2>AI summary</h2>
+            <p id="explain-text">Run analysis to generate a grounded explanation.</p>
+            <div class="citations hidden" id="citations">
+              <h3>Sources</h3>
+              <ul id="citations-list"></ul>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- —— Comps & Appreciation tab —— -->
+    <div id="panel-comps" class="panel" role="tabpanel" hidden>
+      <section class="comps-hero">
+        <div class="comps-hero-bg" aria-hidden="true"></div>
+        <div class="comps-hero-inner">
+          <h1>Lookup comps &amp; appreciation</h1>
+          <p>Find nearby comparable listings and see how your home’s value has moved since purchase.</p>
+
+          <div class="search-pill">
+            <input
+              type="text"
+              id="prop-street"
+              placeholder="Enter a street address"
+              value="10629 Hendon St"
+              aria-label="Street address"
+            />
+            <button type="button" class="search-btn" id="btn-lookup" aria-label="Search comps">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+                <path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+          <p class="hero-hint">Same property type only · Houses within 5 km · Apartments: same building + nearby</p>
+        </div>
+      </section>
+
+      <div class="content-wrap comps-wrap">
+        <section class="panel-card">
+          <h2>Property details</h2>
+          <div class="grid-2">
+            <div class="field">
+              <label for="prop-type">Property type</label>
+              <select id="prop-type">
+                <option value="detached" selected>Detached</option>
+                <option value="semi_detached">Semi-detached</option>
+                <option value="townhouse">Townhouse</option>
+                <option value="apartment">Apartment</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="prop-country">Country</label>
+              <select id="prop-country">
+                <option value="United States">United States</option>
+                <option value="Canada">Canada</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="prop-city">City</label>
+              <input type="text" id="prop-city" value="Austin"/>
+            </div>
+            <div class="field">
+              <label for="prop-state">State / Province</label>
+              <input type="text" id="prop-state" value="TX" maxlength="2"/>
+            </div>
+            <div class="field">
+              <label for="prop-zip">ZIP / Postal code</label>
+              <input type="text" id="prop-zip" value="78748"/>
+            </div>
+            <div class="field">
+              <label for="prop-condition">Condition</label>
+              <select id="prop-condition">
+                <option value="fair">Fair</option>
+                <option value="good" selected>Good</option>
+                <option value="excellent">Excellent</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="prop-beds">Beds</label>
+              <input type="number" id="prop-beds" value="4" min="0" step="1"/>
+            </div>
+            <div class="field">
+              <label for="prop-baths">Baths</label>
+              <input type="number" id="prop-baths" value="2.5" min="0" step="0.5"/>
+            </div>
+            <div class="field">
+              <label for="sqft">Square feet</label>
+              <input type="number" id="sqft" value="2180" min="1"/>
+            </div>
+            <div class="field">
+              <label for="prop-year">Year built</label>
+              <input type="number" id="prop-year" value="2008" min="1800"/>
+            </div>
+            <div class="field">
+              <label for="purchase-price">Purchase price</label>
+              <input type="number" id="purchase-price" value="425000" min="1"/>
+            </div>
+            <div class="field">
+              <label for="purchase-date">Purchase date</label>
+              <input type="date" id="purchase-date" value="2022-04-15"/>
+            </div>
+            <div class="field">
+              <label for="asking-price">Asking price (optional)</label>
+              <input type="number" id="asking-price" min="1" placeholder="Leave blank if not listing"/>
+            </div>
+          </div>
+          <div class="actions-bar" style="margin-top:16px">
+            <button class="btn-dark" id="btn-lookup-form" type="button">Lookup comps &amp; appreciation</button>
+            <span id="comps-loading" class="hidden"><span class="loading"></span> Searching live listings…</span>
+          </div>
+          <p id="comps-error" class="error hidden"></p>
+        </section>
+
+        <div id="comps-results" class="hidden">
+          <section class="panel-card estimate-hero" id="estimate-card">
+            <p class="estimate-label">Estimated value</p>
+            <p class="estimate-value" id="estimate-value">—</p>
+            <p class="estimate-sub" id="estimate-headline"></p>
+            <div class="pills" id="estimate-pills"></div>
+            <div class="grid-2 market-stats" id="appreciation-stats"></div>
+          </section>
+
+          <section class="listings-section">
+            <div class="listings-head">
+              <h2 id="listings-heading">Comparable listings</h2>
+              <p class="muted" id="market-area"></p>
+            </div>
+            <div class="listings-grid" id="listings-list"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <a href="/docs">API docs</a> · RefiMatch demo
+  </footer>
+  <script src="/static/demo.js"></script>
+</body>
+</html>
